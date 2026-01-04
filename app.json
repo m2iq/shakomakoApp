@@ -1,11 +1,17 @@
 {
   "expo": {
-    "name": "ShakoMako",
-    "slug": "ShakoMako",
+    "name": "shakomako",
+    "slug": "shakomako",
     "version": "1.0.0",
+    "owner": "mo_nz",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "shakomako",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -19,10 +25,24 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+       
+    
       },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "shakomako"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.mo_nz.ShakoMako"
     },
     "web": {
       "bundler": "metro",
@@ -30,10 +50,18 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "04314620-c786-45e5-b780-3ff0c68ee88f"
+      }
     }
   }
 }
