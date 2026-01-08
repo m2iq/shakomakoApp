@@ -17,6 +17,8 @@ export default function TabOneScreen() {
   const pagerRef = useRef<PagerView>(null);
   const [tab, setTab] = useState(0); // 0 = لك, 1 = أتابعه
   const [showCommentsSection, setShowCommentsSection] = useState(false);
+  const [comid, setComId] = useState<string>('');
+  
   const [actionIndexForYou, setActionIndexForYou] = useState<string | null>(null);
   const [actionIndexFollowing, setActionIndexFollowing] = useState<string | null>(null);
   
@@ -57,7 +59,9 @@ export default function TabOneScreen() {
   );
   
   const showComments = ({id} : {id : string})=>{
-        alert('show : '+id)
+        if(!id) return;
+        alert('show : '+id);
+        setComId(id);
         setShowCommentsSection(true)
   }
 
@@ -143,7 +147,7 @@ export default function TabOneScreen() {
 
       {/* ✅ نافذة التعليقات */}
      {showCommentsSection && (
-     <CommentsOverlay tabBar={true} showCommentsSection={showCommentsSection} setShowCommentsSection={setShowCommentsSection} />
+     <CommentsOverlay tabBar={true} showCommentsSection={showCommentsSection} setShowCommentsSection={setShowCommentsSection} commentsId={comid}/>
 )}
 
     </View>

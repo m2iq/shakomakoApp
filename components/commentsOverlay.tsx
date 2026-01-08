@@ -1,4 +1,5 @@
 import Colors from '@/constants/Colors';
+import { supabase } from '@/utils/supabase';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState, useEffect, useRef } from 'react';
 import {
@@ -20,12 +21,29 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const screenHeight = Dimensions.get('window').height;
 
-export default function CommentsOverlay({tabBar = true ,showCommentsSection, setShowCommentsSection } : {tabBar : boolean, showCommentsSection: boolean; setShowCommentsSection: (value: boolean) => void }) {
+export default function CommentsOverlay({tabBar = true ,showCommentsSection, setShowCommentsSection , commentsId} : {tabBar : boolean, showCommentsSection: boolean; setShowCommentsSection: (value: boolean) => void , commentsId?: string}) {
   const animatedHeight = useRef(new Animated.Value(0)).current;
   const colorScheme =  useColorScheme();
   const alphaBg = colorScheme == 'dark' ? Colors.dark.backgroundAhlpa : Colors.light.backgroundAhlpa;
- 
-
+  const [comments, setComments] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchCommentsForPost = async () => {
+      supabase.from('comments')
+        .select(`* , comment_likes(user_id)  ,users(uid , name , username , avatar , verified),
+       comment_replys( id ,  comment_reply_likes(user_id),comment_reply_text ,comment_time , created_at, comment_id  ,comment_reply_src, reply_to_user_id(uid , name , username , avatar , verified) 
+        ,user_id(uid , name , username , avatar , verified))  ),comment_likes(user_id)  `,{ count: 'exact' })
+    
+        .eq('post_id', commentsId)
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('Error fetching comments:', error);
+          } else {
+             setComments(data || []);
+          }
+        });
+    }
+    if(commentsId) fetchCommentsForPost();
+  }, [commentsId]);
   useEffect(() => {
    
     const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
@@ -86,8 +104,8 @@ export default function CommentsOverlay({tabBar = true ,showCommentsSection, set
           contentContainerStyle={{ paddingBottom: 80 }} // مساحة لـ Input
         >
           <Text style={{ fontWeight: 'bold', fontSize: 17, color: '#fff' }}>التعليقات</Text>
-          {[...Array(15).keys()].map(i => (
-            <Text key={i} style={{ color: '#fff', marginVertical: 5 }}>تعليق {i+1}</Text>
+          {comments.map(comment => (
+            <Text key={comment.comment_id} style={{ color: '#fff', marginVertical: 5 }}> {comment?.users?.name +' :' +comment?.comment_text} </Text>
           ))}
         </ScrollView>
         <SafeAreaView style={{

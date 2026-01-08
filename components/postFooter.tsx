@@ -2,10 +2,23 @@ import { TouchableOpacity } from "react-native";
 import { Text, View } from "./Themed";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from '@/components/useColorScheme';
-export default function PostFooter(item : any) {
+import CommentsOverlay from './commentsOverlay'
+import { useState } from "react";
+interface PostFooterProps {
+    p: any; 
+    showCommentsSection: boolean;
+    setShowCommentsSection: (value: boolean) => void;
+    comid: (id : string) => void;
+}
+export default function PostFooter({p, showCommentsSection , setShowCommentsSection , comid}: PostFooterProps) {
     const colorScheme = useColorScheme();
     const iconColor = colorScheme === 'dark' ? '#ffffff' : '#000000';
-    const post = item.post;
+    const post = p?.post || p;
+  
+    const showComments = ()=>{
+        setShowCommentsSection(true);
+        comid(post.post_id);
+    }
     return (
         <View>
             <View style={{flexDirection:'row', justifyContent:'space-between', paddingHorizontal:20, paddingVertical:10,gap:15 , marginTop:30}}>
@@ -64,6 +77,7 @@ export default function PostFooter(item : any) {
 
                 <TouchableOpacity
                     style={{ width:30 , height:40 , alignItems:'center' , justifyContent:'center' , borderRadius:15 }}
+                    onPress={()=> showComments()}
                 >
                 <Ionicons name="chatbubble-outline" size={26}  color={iconColor} />
                 </TouchableOpacity>  
@@ -74,6 +88,7 @@ export default function PostFooter(item : any) {
                 <Feather name="heart" size={26} color={iconColor} />
                 </TouchableOpacity>                 
             </View>
+            
         </View>
     );
 }

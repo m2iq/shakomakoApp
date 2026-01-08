@@ -5,7 +5,7 @@ import { Text, View } from '@/components/Themed';
 import PostView from '@/components/postView';
 import { supabase } from '../../utils/supabase';
 import { getPosts } from "@/utils/getPosts"; // المسار حسب مشروعك
-
+import CommentsOverlay from '@/components/commentsOverlay';
 
 
 
@@ -14,13 +14,17 @@ export default function TabTwoScreen() {
    const [users, setUsers] = React.useState<any[]>([]);
     const [posts, setPosts] = useState<any>([]);
    const [loading, setLoading] = useState<boolean>(true);
- 
+    const [showCommentsSection1 , setShowCommentsSection1] = useState<boolean>(false);
+    const [commentsID , setCommentsID] = useState<string>('');
+
+   
 
    useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
       try {
         const result = await getPosts(50); // الحد الأقصى للمنشورات
+        if(result)
         setPosts(result.posts);
       } catch (err) {
         console.error("Error fetching posts:", err);
@@ -70,8 +74,22 @@ export default function TabTwoScreen() {
       data={posts}
       keyExtractor={(item) => item.post_id.toString()}
        showsVerticalScrollIndicator={false}
-      renderItem={({ item }) =>  <PostView post={item} />}
+      renderItem={({ item }) =>
+          <PostView 
+            post={item}
+            showCommentsSection={showCommentsSection1}
+            setShowCommentsSection={setShowCommentsSection1}
+            setComId={setCommentsID}
+          />}
     />
+    {showCommentsSection1 && (
+     <CommentsOverlay 
+      tabBar={true} 
+      showCommentsSection={showCommentsSection1} 
+      setShowCommentsSection={setShowCommentsSection1}
+       commentsId={commentsID}
+       />
+  )}
     </View>
   );
 }

@@ -4,10 +4,17 @@ import { useEffect, useState } from "react";
 import PostFooter from "./postFooter";
 import { setFormatTime} from "./formatTime";
 import { ResizeMode, Video } from "expo-av";
-export default function PostView({post}: {post: any}) {
+interface PostFooterProps {
+    post: any; 
+    showCommentsSection: boolean;
+    setShowCommentsSection: (value: boolean) => void;
+    setComId : (id : string) => void;
+}
+export default function PostView({post , showCommentsSection , setShowCommentsSection , setComId}: PostFooterProps) {
       const [imageSize, setImageSize] = useState({ width: 1, height: 1 });
       const screenWidth = Dimensions.get('window').width;
       const ProjectId = 'znpvmbsnrpdwortyoukn';
+
       
     useEffect(() => {
     if(post.type !== 'image') return;
@@ -80,7 +87,7 @@ export default function PostView({post}: {post: any}) {
              >{post.title}</Text> : ''
             }
 
-         <PostFooter post={post}/>
+         <PostFooter p={post} showCommentsSection={showCommentsSection} setShowCommentsSection={setShowCommentsSection} comid={setComId}/>
         </View>
     );
 }
